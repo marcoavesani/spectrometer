@@ -44,6 +44,7 @@ public:
 
 private:
     int handle;
+    int motnum=3;
     float volts[3]={DEFAULT_VOLT,DEFAULT_VOLT,DEFAULT_VOLT};        //3 Values... Number of motors...
     int speed[3] = {DEFAULT_SPEED,DEFAULT_SPEED,DEFAULT_SPEED};
     int movemode[3] ={DEFAULT_MOVEMODE,DEFAULT_MOVEMODE,DEFAULT_MOVEMODE};
@@ -89,3 +90,4 @@ public slots:
 };
 
 #endif // STEPPER_MOTOR_H
+///
