@@ -1,4 +1,5 @@
 #include "stepper_motor.h"
+#include <iostream>
 
 stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
 {
@@ -83,6 +84,8 @@ int stepper_motor::get_mot_pos(int num){
 }
 
 int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or error code //
+
+  std::cout<<"Debug"<<std::endl;
   char cmdi2[MAXINLEN+1];
   int idx, retval, converted,arg2;
   int motnum, steps, inspeed;
@@ -255,5 +258,40 @@ int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or erro
  // no command //
   };
   return retval;
+}
+
+int stepper_motor::main_func(char * command) {
+  int idx, ir, cmo;
+  int inh=0; /* stdin */
+
+  if ((fp = fopen(FIFO_FILE, "wb")) ==NULL){
+  printf("Error opening file\n");
+  exit(1);
+  }
+
+  /* open stepper motor device */
+  handle=open(DEVICE,O_RDWR);
+  if (handle==-1) return -emsg(1);
+
+  do {
+    /* read in one line, waiting for newline */
+    idx=0;
+    while ((ir=read(inh,&cmd[idx],1))==1 && idx<MAXINLEN) {
+      if (cmd[idx]=='\n' || cmd[idx]==';') break;
+      idx++;
+    };
+    cmd[idx]='\0';
+    if (idx==MAXINLEN)
+      while ((ir=read(inh,&cmo,1))==1) if (cmo=='n' || cmo == ',') break;
+    /* command parser */
+    cmo=parse_command(cmd);
+#ifdef DEBUG
+    printf("parser return: %d\n",cmo);
+#endif
+  } while (!cmo);
+
+  fclose(fp);
+  ::close(handle);
+  return 0;
 }
 

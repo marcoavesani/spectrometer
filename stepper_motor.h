@@ -8,6 +8,8 @@
 #include <string.h>
 #include "sm32_2.h"   //Probably card specific lib
 #include <time.h>
+#include <unistd.h>
+
 
 /* #define DEBUG */
 /* default values and global variables */
@@ -38,6 +40,7 @@ public:
     int is_motor_there(int motnum);
     int get_mot_pos(int num);
     int parse_command(char * cmd);
+    int main_func(char * command);
 
 
 
