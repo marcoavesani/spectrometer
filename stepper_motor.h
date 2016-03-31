@@ -4,6 +4,7 @@
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
 #include <string.h>
 #include "sm32_2.h"   //Probably card specific lib
 #include <time.h>
@@ -25,7 +26,7 @@
 #define MAXVOLT 12.0
 #define MAXSPEED 1000
 #define NUMCOMMANDS 14
-/*
+
 class stepper_motor : public QWidget
 {
     Q_OBJECT
@@ -34,9 +35,9 @@ public:
     int emsg(int a);
     int is_motor_ready(int num);
     int get_mot_status(int num);
-    int is_motor_there(motnum);
+    int is_motor_there(int motnum);
     int get_mot_pos(int num);
-    int parse_command;
+    int parse_command(char * cmd);
 
 
 
@@ -44,43 +45,18 @@ public:
 
 private:
     int handle;
-    int motnum=3;
-    float volts[3]={DEFAULT_VOLT,DEFAULT_VOLT,DEFAULT_VOLT};        //3 Values... Number of motors...
-    int speed[3] = {DEFAULT_SPEED,DEFAULT_SPEED,DEFAULT_SPEED};
-    int movemode[3] ={DEFAULT_MOVEMODE,DEFAULT_MOVEMODE,DEFAULT_MOVEMODE};
+    float volts[3];        //3 Values... Number of motors...
+    int speed[3];
+    int movemode[3];
     FILE *fp;
-    char * errormessage[] ={
-      "No error.",
-      "device not found.",
-      "Not enough parameters.",
-      "Wrong motor number. Must be 0, 1 or 2.",
-      "Motor write timeout.",
-      "Voltage out of range (0 to 12V).",
-      "Speed out of range (0 to 1000).",
-    };
-    int MOT[] = {MOT_0,MOT_1,MOT_2,}; //Lib specific??
+    char * errormessage[];
+    int MOT[3];
 
     // some basic motor commands
     struct timespec twenty_millisec = {0,20000000};
     struct timespec time_left;
     char cmd[MAXINLEN+1];
-    char * commands[]={
-      "",  // 0: do nothing
-      ".", // terminate
-      "go",// go to a certain value
-      "init",
-      "on",
-      "off", // 5
-      "set",
-      "exit",
-      "setvolt",
-      "setspeed",
-      "reset", // 10
-      "break",
-      "vmode",
-      "pmode",
-      "getpos",
-    };
+    char * commands[];
 
 
 
@@ -88,7 +64,7 @@ signals:
 
 public slots:
 };
-*/
+
 #endif // STEPPER_MOTOR_H
 ///
 

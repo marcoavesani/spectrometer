@@ -1,7 +1,37 @@
 #include "stepper_motor.h"
-/*
+
 stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
 {
+    float volts[3]={DEFAULT_VOLT,DEFAULT_VOLT,DEFAULT_VOLT};
+    int speed[3] = {DEFAULT_SPEED,DEFAULT_SPEED,DEFAULT_SPEED};
+    int movemode[3] ={DEFAULT_MOVEMODE,DEFAULT_MOVEMODE,DEFAULT_MOVEMODE};
+    char * errormessage[] ={
+      "No error.",
+      "device not found.",
+      "Not enough parameters.",
+      "Wrong motor number. Must be 0, 1 or 2.",
+      "Motor write timeout.",
+      "Voltage out of range (0 to 12V).",
+      "Speed out of range (0 to 1000).",
+    };
+    int MOT[3] = {MOT_0,MOT_1,MOT_2,}; //Lib specific??
+    char * commands[]={
+      "",  // 0: do nothing
+      ".", // terminate
+      "go",// go to a certain value
+      "init",
+      "on",
+      "off", // 5
+      "set",
+      "exit",
+      "setvolt",
+      "setspeed",
+      "reset", // 10
+      "break",
+      "vmode",
+      "pmode",
+      "getpos",
+    };
 
 }
 
@@ -31,7 +61,7 @@ int stepper_motor::get_mot_status(int num){
     if (tc) return ioctl(handle, SM32Fetch | MOT[num]);
     return 0; // timeout //
 }
-int stepper_motor::is_motor_there(motnum){
+int stepper_motor::is_motor_there(int motnum){
   int tc=timeout_motor_travel/20;
   while ((get_mot_status(motnum) == mstPos) && tc>0) {
     // wait if device is busy //
@@ -226,4 +256,4 @@ int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or erro
   };
   return retval;
 }
-*/
+
