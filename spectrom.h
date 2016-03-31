@@ -2,7 +2,7 @@
 #define SPECTROM_H
 
 #include <vector>
-
+#include <QWidget>
 //This class will be used for the calculation of the diffraction and for the calibration
 
 //The calibration will be done in this way.. Once the wavelength is provided the program scans all the angles for the maximum intensity..
@@ -11,6 +11,7 @@
 
 //The reconstruction is simply done using the fitted function
 
+using namespace std;
 class spectrom : public QWidget
 {
     Q_OBJECT

@@ -4,3 +4,4 @@ spectrom::spectrom(QWidget *parent) : QWidget(parent)
 {
 
 }
+//

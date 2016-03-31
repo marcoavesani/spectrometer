@@ -25,7 +25,7 @@
 #define MAXVOLT 12.0
 #define MAXSPEED 1000
 #define NUMCOMMANDS 14
-
+/*
 class stepper_motor : public QWidget
 {
     Q_OBJECT
@@ -55,27 +55,27 @@ private:
       "Not enough parameters.",
       "Wrong motor number. Must be 0, 1 or 2.",
       "Motor write timeout.",
-      "Voltage out of range (0 to 12V).", /* 5 */
+      "Voltage out of range (0 to 12V).",
       "Speed out of range (0 to 1000).",
     };
     int MOT[] = {MOT_0,MOT_1,MOT_2,}; //Lib specific??
 
-    /* some basic motor commands */
+    // some basic motor commands
     struct timespec twenty_millisec = {0,20000000};
     struct timespec time_left;
     char cmd[MAXINLEN+1];
     char * commands[]={
-      "",  /* 0: do nothing */
-      ".", /* terminate */
-      "go",/* go to a certain value */
+      "",  // 0: do nothing
+      ".", // terminate
+      "go",// go to a certain value
       "init",
       "on",
-      "off", /* 5 */
+      "off", // 5
       "set",
       "exit",
       "setvolt",
       "setspeed",
-      "reset", /* 10 */
+      "reset", // 10
       "break",
       "vmode",
       "pmode",
@@ -88,6 +88,7 @@ signals:
 
 public slots:
 };
-
+*/
 #endif // STEPPER_MOTOR_H
 ///
+
