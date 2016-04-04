@@ -23,6 +23,7 @@ HEADERS  += mainwindow.h \
     spectrom.h \
     sm32_2.h \
     counting.h \
+    dt304.h \
     dt304.h
 
 FORMS    += mainwindow.ui
