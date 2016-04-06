@@ -29,6 +29,7 @@ public:
     explicit counting(QWidget *parent = 0);
     int emsg(int code);
     int counting_function(int argc, char *argv[]);
+    int getcount(int &finalcount, unsigned long integtime, int maxtimesl);
 
 
 private:
