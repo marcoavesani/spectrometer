@@ -41,7 +41,19 @@ public:
     int get_mot_pos(int num);
     int parse_command(char * cmd);
     int main_func(char * command);
-
+    /*===============================*/
+    int go(int motnum, int steps);
+    int init(int motnum, double involts, int inspeed);
+    int on(int motnum);
+    int off(int motnum);
+    int set(int motnum, int steps);
+    int setvolt(int motnum, double involts);
+    int setspeed(int motnum, int inspeed);
+    int reset(int motnum);
+    int motbreak(int motnum);
+    int vmode(int motnum);
+    int pmode(int motnum);
+    int getpos(int motnum, int &position);
 
 
 
@@ -60,6 +72,7 @@ private:
     struct timespec time_left;
     char cmd[MAXINLEN+1];
     char * commands[];
+
 
 
 

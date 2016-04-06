@@ -210,6 +210,7 @@ int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or erro
           break;
           default:
           retval = -emsg(2);
+
       };
       if (retval==0) {
           speed[motnum]=inspeed;
@@ -295,3 +296,131 @@ int stepper_motor::main_func(char * command) {
   return 0;
 }
 
+/*=======================
+int stepper_motor::go(int motnum, int steps) {
+
+        if (motnum<0 || motnum>2) {return(emsg(3));};
+        // do it //
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        ioctl(handle,SM32Post | mcGo | MOT[motnum], steps);
+        if (waitmode)
+            if (!is_motor_there(motnum)) {return(emsg(5));};
+        nanosleep(&twenty_millisec,&time_left);
+    return(emsg(2));
+}
+
+int stepper_motor::init(int motnum, double involts, int inspeed) { // init command //
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+        if (inspeed<0.0 || inspeed >MAXSPEED) {return(emsg(6));};
+        speed[motnum]=inspeed;
+        if (involts<0.0 || involts >MAXVOLT) {
+            return(emsg(5));};
+        volts[motnum]=involts;
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        // set voltage //
+        ioctl(handle,SM32Post | mcU | MOT[motnum],
+          (int)(volts[motnum]*10.));
+        // set pos / move mode //
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        ioctl(handle,SM32Post | mcPosMode | MOT[motnum],
+          (movemode[motnum]?mmMove:mmPos));
+        // set speed //
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        ioctl(handle,SM32Post | mcF | MOT[motnum],
+          (int)(movemode[motnum]?0:speed[motnum]));
+        // switch on //
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        ioctl(handle,SM32Post | mcPower | MOT[motnum], 1);
+        return(emsg(2));
+
+}
+
+int stepper_motor::set(int motnum, int steps) {  //not sure if that's working as intended
+
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    ioctl(handle, SM32Post| mcPosition | MOT[motnum], steps);
+
+}
+
+int stepper_motor::setvolt(int motnum, double involts) {
+
+    if (involts<0.0 || involts >MAXVOLT) {
+        return (emsg(5));};
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+        volts[motnum]=involts;
+        if (!is_motor_ready(motnum)) {return(emsg(4));};
+        // set voltage //
+        ioctl(handle,SM32Post | mcU | MOT[motnum],(int)(10.0*volts[motnum]));
+}
+
+
+
+int stepper_motor::setspeed(int motnum, int inspeed) {
+
+    if (!movemode)
+        if (inspeed<0.0 || inspeed >MAXSPEED) {
+        return(emsg(6));};
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    speed[motnum]=inspeed;
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    // set speed //
+    ioctl(handle,SM32Post | mcF | MOT[motnum], (int)speed[motnum]);
+
+}
+
+int stepper_motor::reset(int motnum) {
+
+    if (!is_motor_ready(0)) {return(emsg(4));};
+    ioctl(handle, SM32Post | mcReset, 0);
+
+}
+
+int stepper_motor::getpos(int motnum, int &position) {// get position
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    position=get_mot_pos(motnum);
+
+}
+
+int stepper_motor::motbreak(int motnum) {
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    ioctl(handle,SM32Post | mcBreak | MOT[motnum],0);
+}
+
+int stepper_motor::on(int motnum) { // on command
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    ioctl(handle,SM32Post | mcPower |MOT[motnum],1);
+
+}
+
+int stepper_motor::off(int motnum) { //off command
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    ioctl(handle,SM32Post | mcPower |MOT[motnum],0);
+
+}
+
+int stepper_motor::vmode(int motnum) {
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    movemode[motnum]=1;
+    ioctl(handle,SM32Post | mcPosMode | MOT[motnum],(movemode[motnum]?mmMove:mmPos));
+}
+
+int stepper_motor::pmode(int motnum) {
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    movemode[motnum]=0;
+    ioctl(handle,SM32Post | mcPosMode | MOT[motnum],(movemode[motnum]?mmMove:mmPos));
+}
+
+//"off"
+*/
