@@ -1,22 +1,39 @@
 #include "counting.h"
+#include <QDebug>
 
 counting::counting(QWidget *parent) : QWidget(parent)
 {
     struct timespec ten_millisec = {0,10000000};
-    char *errormessage[] = {
+   /*
+    char *errormes = {
       "No error.",
       "Integration time out of range.",
       "IO device busy.",
       "Can't open devcice.",
       "Option error. Usage: dt304_counter [-t time ] [-n] [-m maxtime]\n",
-      "??", /* 5 */
+      "??",
       "??",
       "Maximum timeslot size out of range.",
-    };
+    };*/
+    errormessage.push_back("No error.");
+    errormessage.push_back("Integration time out of range.");
+    errormessage.push_back( "IO device busy.");
+    errormessage.push_back( "Can't open devcice.");
+    errormessage.push_back("Option error. Usage: dt304_counter [-t time ] [-n] [-m maxtime]\n");
+    errormessage.push_back("??");
+    errormessage.push_back("??");
+    errormessage.push_back( "Maximum timeslot size out of range.");
+
 }
 
+//int counting::emsg(int code) {
+//  fprintf(stderr,"%s\n",errormessage[code]);
+//  return code;
+//}
+
 int counting::emsg(int code) {
-  fprintf(stderr,"%s\n",errormessage[code]);
+  //fprintf(stderr,"%s\n",errormessage[code]);
+  qDebug()<<(errormessage[code]).c_str();
   return code;
 }
 
@@ -132,22 +149,22 @@ int counting::getcount(int &finalcount, unsigned long integtime, int maxtimesl) 
   int uwert;
   if (integtime > MAX_INTEGTIME || integtime < 0) return emsg(1);
   if (maxtimesl <1 || maxtimesl > DEFAULT_MAXTIMESLOT) return emsg(7);
-
+  std::cout<<"Debug"<<std::endl;
   /* open counter card driver */
   if ((fh=open(BOARDNAME,O_RDWR)) == -1) {
     if (errno == EBUSY) { return -emsg(2);}
     else { return -emsg(3);};
   };
-
+   std::cout<<"Debug"<<std::endl;
   /* calculate real integration time in elementary steps */
   while (integtime >0) {
     integtime1=(integtime>maxtimesl?maxtimesl:integtime);
     integtime-=integtime1;
-
+std::cout<<"Debug"<<std::endl;
 
     /* reset/unreset counter chip */
     ioctl(fh,TIMER_RESET);
-
+std::cout<<"Debug"<<std::endl;
     /* prepare counter 2 as 1 kHz heartbeat for the gate output */
     ioctl(fh,SET_USER_PERIODE_2, 0xffff-20000+2);
     ioctl(fh,SET_USER_PULSE_2, 0xffff-10000+1);

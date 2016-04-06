@@ -9,9 +9,12 @@
 #include <errno.h>
 #include <time.h>
 #include "dt304.h"
+#include <iostream>
+#include <vector>
+#include <string>
 
 /* using definitions of minor device 1 */
-#define BOARDNAME "/dev/ioboards/dt304a"
+#define BOARDNAME "/dev/ioboards/dt304one"
 #define DEFAULT_INTEGTIME  1000
 #define CR_OPTION_DEFAULT 1  /* send newline after values */
 
@@ -31,13 +34,13 @@ public:
     int counting_function(int argc, char *argv[]);
     int getcount(int &finalcount, unsigned long integtime, int maxtimesl);
 
-
 private:
     char *optarg;
-    int optind, opterr, optopt;
+    int   optind, opterr, optopt;
     struct timespec ten_millisec = {0,10000000};
     struct timespec time_left;
-    char *errormessage[];
+    //char *errormessage[];
+    std::vector <std::string> errormessage;
 signals:
 
 public slots:
