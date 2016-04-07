@@ -14,7 +14,7 @@
 #include <string>
 
 /* using definitions of minor device 1 */
-#define BOARDNAME "/dev/ioboards/dt304one"
+#define BOARDNAME "/dev/ioboards/dt30x_0"
 #define DEFAULT_INTEGTIME  1000
 #define CR_OPTION_DEFAULT 1  /* send newline after values */
 
