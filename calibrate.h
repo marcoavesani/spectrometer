@@ -13,9 +13,10 @@ class calibrate : public QWidget
     Q_OBJECT
 public:
     explicit calibrate( stepper_motor *step, counting *count,QWidget *parent = 0);
-    int firstpeak(double wavelength); //if there is no calibration file the first peak has to added with this function
-    double addpeak(double wavelength);
+    int firstpeak(double wavelength); //moves to the position where you expect maximal emission according to the grating equation
+    int addpeak(double wavelength);
     void docalib();
+    void changestepsize(double angle); //Change stepsize in degree
 
 private:
     double calibrate::addpeak(double wavelength) ; //estimates peak position for given wavelength with default calibration
@@ -29,9 +30,10 @@ private:
     counting * counting_point;
     unsigned long integtime; //needs to be initialized with proper value
     int maxtimesl; //needs to be initialized with proper value
-    double blazingangle = ; // in radian
-    double gratingconstant = ; //lines per meter
 
+    double blazingangle = 28.68; // in Degree
+    int gratingconstant =1./( 1.66666); //inverse of( distance between two lines in nm)
+    int stepsize;
 
 signals:
 
