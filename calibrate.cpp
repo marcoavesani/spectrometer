@@ -1,6 +1,6 @@
 #include "calibrate.h"
 
-calibrate::calibrate(QWidget *parent,stepper_motor * step, counting * count) : QWidget(parent)
+calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
 {
 
     step_mot_point=step;
@@ -10,7 +10,7 @@ calibrate::calibrate(QWidget *parent,stepper_motor * step, counting * count) : Q
 int calibrate::firstpeak(double wavelength) {
 
     step_mot_point->setzero(motnum);
-    step_mot_point->go(-(step_mot_point->getnumbofsteps()/4));
+    step_mot_point->go(motnum,-(step_mot_point->getnumbofsteps()/4));
     double maxcount = 0;
     int maxcountposition = 0;
 
@@ -35,7 +35,7 @@ int calibrate::firstpeak(double wavelength) {
     }
     else {
 
-        cout << "Couldn't open file to save claibration parameters. \n";
+        std::cout << "Couldn't open file to save claibration parameters. \n";
         return 1;
     }
 

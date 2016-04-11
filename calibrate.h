@@ -12,7 +12,7 @@ class calibrate : public QWidget
 {
     Q_OBJECT
 public:
-    explicit calibrate(QWidget *parent = 0, stepper_motor *step, counting *count);
+    explicit calibrate( stepper_motor *step, counting *count,QWidget *parent = 0);
     int firstpeak(double wavelength); //if there is no calibration file the first peak has to added with this function
     int addpeak(double wavelength);
     void docalib();

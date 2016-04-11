@@ -22,7 +22,7 @@
 #define DEVICE  "/dev/ioboards/stepper3"    //Not really nice... Can change
 #define FIFO_FILE "./fifo_spectro"   //IO
 #define MAXINLEN 200
-#define NUMBOFSTEPS //number of steps per full rotation
+#define NUMBOFSTEPS 0//number of steps per full rotation
 
 /* some timeouts (all in ms) and limits*/
 #define timeout_motor_ready 2000

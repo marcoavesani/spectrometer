@@ -298,11 +298,6 @@ int stepper_motor::main_func(char * command) {
   return 0;
 }
 
-<<<<<<< HEAD
-
-=======
-/*=======================*/
->>>>>>> eb4d5a816e00ed9be1e6ae0adb00720039cd409d
 int stepper_motor::go(int motnum, int steps) {
 
         if (motnum<0 || motnum>2) {return(emsg(3));};

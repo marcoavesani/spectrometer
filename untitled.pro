@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     stepper_motor.cpp \
     spectrom.cpp \
     counting.cpp \
-    calibration.cpp
     calibrate.cpp
 
 
