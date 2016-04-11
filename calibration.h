@@ -1,6 +1,7 @@
 #ifndef CALIBRATION_H
 #define CALIBRATION_H
 
+#include <QWidget>\
 
 class calibration : public QWidget
 {

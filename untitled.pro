@@ -17,7 +17,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     stepper_motor.cpp \
     spectrom.cpp \
-    counting.cpp
+    counting.cpp \
+    calibration.cpp
 
 HEADERS  += mainwindow.h \
     stepper_motor.h \
@@ -25,6 +26,7 @@ HEADERS  += mainwindow.h \
     sm32_2.h \
     counting.h \
     dt304.h \
-    dt304.h
+    dt304.h \
+    calibration.h
 
 FORMS    += mainwindow.ui
