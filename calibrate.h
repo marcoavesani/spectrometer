@@ -19,17 +19,17 @@ public:
     void changestepsize(double angle); //Change stepsize in degree
 
 private:
-    double calibrate::addpeak(double wavelength) ; //estimates peak position for given wavelength with default calibration
 
-    int searcharea = 1000; //area around predicted peak position in which peak will be searched for
+    double predictposition(double wavelength);
+    int searcharea; //area around predicted peak position in which peak will be searched for
     std::string calibpath; //where calibration file will looked for/go to
     std::vector<double> wavelengths;
     std::vector<int> positions;
     int motnum = 0;
     stepper_motor * step_mot_point;
     counting * counting_point;
-    unsigned long integtime; //needs to be initialized with proper value
-    int maxtimesl; //needs to be initialized with proper value
+    unsigned long integtime=1000;
+    //int maxtimesl; //needs to be initialized with proper value
 
     double blazingangle = 28.68; // in Degree
     int gratingconstant =1./( 1.66666); //inverse of( distance between two lines in nm)

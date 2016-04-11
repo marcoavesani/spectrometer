@@ -140,8 +140,9 @@ int counting::counting_function(int argc, char *argv[]) {
 }
 
 
-int counting::getcount(int &finalcount, unsigned long integtime, int maxtimesl) {
-  finalcount=0;
+int counting::getcount(int &finalcount, unsigned long integtime) {
+  int maxtimesl= DEFAULT_MAXTIMESLOT;
+    finalcount=0;
   unsigned long integtime1;
   int val0,val1; /* store intermediate results */
   int fh;     /* iocard handle */

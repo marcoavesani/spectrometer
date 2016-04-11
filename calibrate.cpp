@@ -1,17 +1,20 @@
 #include "calibrate.h"
 #include <cmath>
+#include <QDebug>
 
 calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
 {
 
     step_mot_point=step;
     counting_point=count;
-    stepsize = (int)0.0171892/360*step_mot_point->getnumbofsteps();
+    stepsize = int(0.0171892/360*(step->getnumbofsteps()));
+    searcharea=500*(0.0171892/360*(step->getnumbofsteps()));
 }
 
 int calibrate::firstpeak(double wavelength) {
-
+    step_mot_point->setzero(motnum);
     step_mot_point->go(motnum,predictposition(wavelength));
+
 
 
 
@@ -66,7 +69,10 @@ double calibrate::predictposition(double wavelength){
 
 }
 
-double calibrate::addpeak(double wavelength) {
+int calibrate::addpeak(double wavelength) {
+    qDebug()<<wavelength;
+    std::ofstream fileout;
+    fileout.open("./fileout",std::ofstream::out | std::ofstream::app);
 
     int position = predictposition(wavelength);
     double maxcount = 0;
@@ -77,13 +83,16 @@ double calibrate::addpeak(double wavelength) {
 
         int events = 0;
         step_mot_point->go(motnum, stepsize);
-        counting_point->getcount(events, integtime, maxtimesl);
+        counting_point->getcount(events, integtime);
         maxcountposition = (maxcount>events?(position-searcharea+i):maxcountposition);
         maxcount = (maxcount>events?maxcount:events);
     }
 
     positions.push_back(360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps());
     wavelengths.push_back(wavelength);
+
+    fileout<<wavelength<<'/t'<<360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps()<<std::endl;
+    fileout.close();
 }
 
 void calibrate::changestepsize(double angle) {

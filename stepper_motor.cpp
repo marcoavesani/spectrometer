@@ -431,7 +431,7 @@ int stepper_motor::setzero(int motnum) {
     zeroposition[motnum] = position;
 }
 
-int getnumbofsteps() {
+int stepper_motor::getnumbofsteps() {
 
     return NUMBOFSTEPS;
 }
