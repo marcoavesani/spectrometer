@@ -4,9 +4,16 @@
 
 stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
 {
-    float volts[3]={DEFAULT_VOLT,DEFAULT_VOLT,DEFAULT_VOLT};
-    int speed[3] = {DEFAULT_SPEED,DEFAULT_SPEED,DEFAULT_SPEED};
-    int movemode[3] ={DEFAULT_MOVEMODE,DEFAULT_MOVEMODE,DEFAULT_MOVEMODE};
+     volts[0]=DEFAULT_VOLT;
+     volts[1]=DEFAULT_VOLT;
+     volts[2]=DEFAULT_VOLT;
+     speed[0] = DEFAULT_SPEED;
+     speed[1] = DEFAULT_SPEED;
+     speed[2] = DEFAULT_SPEED;
+     movemode[0] =DEFAULT_MOVEMODE;
+     movemode[1] =DEFAULT_MOVEMODE;
+     movemode[2] =DEFAULT_MOVEMODE;
+
     //std::vector<std::string> errormessage;
     errormessage.push_back("No error.");
     errormessage.push_back("device not found.");
@@ -18,8 +25,10 @@ stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
 
 
 
-    int MOT[3] = {MOT_0,MOT_1,MOT_2,}; //Lib specific??
-    commands.push_back("");
+     MOT[0] = MOT_0;
+     MOT[1] = MOT_1;
+     MOT[2] = MOT_2;
+
       commands.push_back("");  // 0: do nothing
       commands.push_back("."); // terminate
       commands.push_back("go");// go to a certain value
@@ -36,6 +45,23 @@ stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
       commands.push_back("pmode");
       commands.push_back("getpos");
 
+
+      handle=open(DEVICE,O_RDWR);
+      if (handle==-1) {
+          -emsg(1);}
+      if ((fp = fopen(FIFO_FILE, "wb")) ==NULL){
+      printf("Error opening file\n");
+      exit(1);
+      }
+      for(int i=0;i<3;i++){
+      init(i,3.1,1000);
+      on(i);
+      }
+      sleep(1);
+}
+
+ stepper_motor::~stepper_motor(){ //Custom Destructor
+     ::close(handle);
 }
 
 int stepper_motor::emsg(int a){
@@ -85,7 +111,7 @@ int stepper_motor::get_mot_pos(int num){
     return 0; // timeout //
 }
 
-int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or error code //
+int stepper_motor::parse_command(const char * cmd) { // returns  0 on success, or error code //
 
   std::cout<<"Debug"<<std::endl;
   char cmdi2[MAXINLEN+1];
@@ -102,6 +128,7 @@ int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or erro
 #ifdef DEBUG
   printf("command:>%s<, cmd index:%d\n",cmd,idx);
 #endif
+  std::cout<<idx<<std::endl;
   switch (idx) {
       case 1:case 7: // terminate //
       retval=1;break;
@@ -267,14 +294,10 @@ int stepper_motor::main_func(char * command) {
   int idx, ir, cmo;
   int inh=0; /* stdin */
 
-  if ((fp = fopen(FIFO_FILE, "wb")) ==NULL){
-  printf("Error opening file\n");
-  exit(1);
-  }
+
 
   /* open stepper motor device */
-  handle=open(DEVICE,O_RDWR);
-  if (handle==-1) return -emsg(1);
+
 
   do {
     /* read in one line, waiting for newline */
@@ -294,7 +317,7 @@ int stepper_motor::main_func(char * command) {
   } while (!cmo);
 
   fclose(fp);
-  ::close(handle);
+
   return 0;
 }
 

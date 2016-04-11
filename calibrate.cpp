@@ -9,6 +9,7 @@ calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : 
     counting_point=count;
     stepsize = int(0.0171892/360*(step->getnumbofsteps()));
     searcharea=500*(0.0171892/360*(step->getnumbofsteps()));
+    motnum=0;
 }
 
 int calibrate::firstpeak(double wavelength) {

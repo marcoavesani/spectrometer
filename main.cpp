@@ -14,7 +14,13 @@ int main(int argc, char *argv[])
     counting count;
     calibrate calibration(&motor,&count);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
-
+   motor.go(0,0);
+   // motor.go(1,1000000000);
+   // motor.go(2,1000000000);
+   // std::string acommands="set 0 100000";
+   //motor.parse_command("init 0 3.1 1000");
+   //motor.parse_command("on 0");
+   //motor.parse_command("go 0 100000000");
 /*
 
     int final_count=0;

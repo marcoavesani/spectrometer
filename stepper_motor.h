@@ -19,7 +19,7 @@
 #define DEFAULT_SPEED 1000      //Speed of stepper
 #define DEFAULT_MOVEMODE 0  /* 0: pos, 1: vel */
 
-#define DEVICE  "/dev/ioboards/stepper3"    //Not really nice... Can change
+#define DEVICE  "/dev/ioboards/stepper3_0"    //Not really nice... Can change
 #define FIFO_FILE "./fifo_spectro"   //IO
 #define MAXINLEN 200
 #define NUMBOFSTEPS 10489536//number of steps per full rotation
@@ -37,12 +37,13 @@ class stepper_motor : public QWidget
     Q_OBJECT
 public:
     explicit stepper_motor(QWidget *parent = 0);
+     ~stepper_motor();
     int emsg(int a);
     int is_motor_ready(int num);
     int get_mot_status(int num);
     int is_motor_there(int motnum);
     int get_mot_pos(int num);
-    int parse_command(char * cmd);
+    int parse_command(const char * cmd);
     int main_func(char * command);
     /*===============================*/
     int go(int motnum, int steps);
@@ -59,7 +60,7 @@ public:
     int getpos(int motnum, int &position);
     int setzero(int motnum);
     int getnumbofsteps();
-
+    std::vector <std::string> commands;
 
 
 
@@ -79,7 +80,7 @@ private:
     struct timespec time_left;
     char cmd[MAXINLEN+1];
     //char * commands[];
-    std::vector <std::string> commands;
+
 
 
 
