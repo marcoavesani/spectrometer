@@ -5,10 +5,16 @@ calibrate::calibrate(QWidget *parent,stepper_motor * step, counting * count) : Q
 
     step_mot_point=step;
     counting_point=count;
+    stepsize = (int)0.0171892/360*step_mot_point->getnumbofsteps();
 }
 
 int calibrate::firstpeak(double wavelength) {
 
+    step_mot_point->go(motnum,predictposition(wavelength));
+
+
+
+    /*
     step_mot_point->setzero(motnum);
     step_mot_point->go(-(step_mot_point->getnumbofsteps()/4));
     double maxcount = 0;
@@ -38,6 +44,7 @@ int calibrate::firstpeak(double wavelength) {
         cout << "Couldn't open file to save claibration parameters. \n";
         return 1;
     }
+    */
 
 
 }
@@ -56,7 +63,7 @@ int calibrate::addpeak(double wavelength) {
     for(int i = 0; i<searcharea; i++) {
 
         int events = 0;
-        step_mot_point->go(motnum, 1);
+        step_mot_point->go(motnum, stepsize);
         counting_point->getcount(events, integtime, maxtimesl);
         maxcountposition = (maxcount>events?(position-searcharea+i):maxcountposition);
         maxcount = (maxcount>events?maxcount:events);
@@ -64,5 +71,10 @@ int calibrate::addpeak(double wavelength) {
 
     positions.push_back(360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps());
     wavelengths.push_back(wavelength);
+}
+
+void calibrate::changestepsize(double angle) {
+
+    stepsize = (int)angle/360*step_mot_point->getnumbofsteps();
 }
 
