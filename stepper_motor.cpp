@@ -296,7 +296,7 @@ int stepper_motor::main_func(char * command) {
   return 0;
 }
 
-/*=======================
+/*=======================*/
 int stepper_motor::go(int motnum, int steps) {
 
         if (motnum<0 || motnum>2) {return(emsg(3));};
@@ -339,8 +339,7 @@ int stepper_motor::init(int motnum, double involts, int inspeed) { // init comma
 int stepper_motor::set(int motnum, int steps) {  //not sure if that's working as intended
 
     if (!is_motor_ready(motnum)) {return(emsg(4));};
-    ioctl(handle, SM32Post| mcPosition | MOT[motnum], steps);
-
+    ioctl(handle, SM32Post| mcPosition | MOT[motnum], (steps-zeroposition[motnum]));
 }
 
 int stepper_motor::setvolt(int motnum, double involts) {
@@ -422,5 +421,16 @@ int stepper_motor::pmode(int motnum) {
     ioctl(handle,SM32Post | mcPosMode | MOT[motnum],(movemode[motnum]?mmMove:mmPos));
 }
 
-//"off"
-*/
+int stepper_motor::setzero(int motnum) {
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    int position;
+    getpos(motnum, position);
+    zeroposition[motnum] = position;
+}
+
+int getnumbofsteps() {
+
+    return NUMBOFSTEPS;
+}
