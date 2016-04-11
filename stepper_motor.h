@@ -5,11 +5,13 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
-#include <string.h>
-#include "sm32_2.h"   //Probably card specific lib
+#include <string>
+#include <vector>
 #include <time.h>
 #include <unistd.h>
 
+
+#include "sm32_2.h"   //Probably card specific lib
 
 /* #define DEBUG */
 /* default values and global variables */
@@ -18,8 +20,9 @@
 #define DEFAULT_MOVEMODE 0  /* 0: pos, 1: vel */
 
 #define DEVICE  "/dev/ioboards/stepper3"    //Not really nice... Can change
-#define FIFO_FILE "/home/kikor/programs/spectro/fifo_spectro"   //IO
+#define FIFO_FILE "./fifo_spectro"   //IO
 #define MAXINLEN 200
+#define NUMBOFSTEPS 10489536//number of steps per full rotation
 
 /* some timeouts (all in ms) and limits*/
 #define timeout_motor_ready 2000
@@ -54,6 +57,8 @@ public:
     int vmode(int motnum);
     int pmode(int motnum);
     int getpos(int motnum, int &position);
+    int setzero(int motnum);
+    int getnumbofsteps();
 
 
 
@@ -64,15 +69,17 @@ private:
     int speed[3];
     int movemode[3];
     FILE *fp;
-    char * errormessage[];
+    //char * errormessage[];
+    std::vector <std::string> errormessage;
     int MOT[3];
+    int zeroposition[3] = {0,0,0};
 
     // some basic motor commands
     struct timespec twenty_millisec = {0,20000000};
     struct timespec time_left;
     char cmd[MAXINLEN+1];
-    char * commands[];
-
+    //char * commands[];
+    std::vector <std::string> commands;
 
 
 

@@ -17,6 +17,7 @@ class spectrom : public QWidget
     Q_OBJECT
 public:
     explicit spectrom(QWidget *parent = 0);
+    double spect_function();
 
 
 private:

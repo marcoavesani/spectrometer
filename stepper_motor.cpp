@@ -1,4 +1,5 @@
 #include "stepper_motor.h"
+#include <QDebug>
 #include <iostream>
 
 stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
@@ -6,38 +7,39 @@ stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
     float volts[3]={DEFAULT_VOLT,DEFAULT_VOLT,DEFAULT_VOLT};
     int speed[3] = {DEFAULT_SPEED,DEFAULT_SPEED,DEFAULT_SPEED};
     int movemode[3] ={DEFAULT_MOVEMODE,DEFAULT_MOVEMODE,DEFAULT_MOVEMODE};
-    char * errormessage[] ={
-      "No error.",
-      "device not found.",
-      "Not enough parameters.",
-      "Wrong motor number. Must be 0, 1 or 2.",
-      "Motor write timeout.",
-      "Voltage out of range (0 to 12V).",
-      "Speed out of range (0 to 1000).",
-    };
+    //std::vector<std::string> errormessage;
+    errormessage.push_back("No error.");
+    errormessage.push_back("device not found.");
+    errormessage.push_back("Not enough parameters.");
+    errormessage.push_back("Wrong motor number. Must be 0, 1 or 2.");
+    errormessage.push_back("Motor write timeout.");
+    errormessage.push_back("Voltage out of range (0 to 12V).");
+    errormessage.push_back("Speed out of range (0 to 1000).");
+
+
+
     int MOT[3] = {MOT_0,MOT_1,MOT_2,}; //Lib specific??
-    char * commands[]={
-      "",  // 0: do nothing
-      ".", // terminate
-      "go",// go to a certain value
-      "init",
-      "on",
-      "off", // 5
-      "set",
-      "exit",
-      "setvolt",
-      "setspeed",
-      "reset", // 10
-      "break",
-      "vmode",
-      "pmode",
-      "getpos",
-    };
+    commands.push_back("");
+      commands.push_back("");  // 0: do nothing
+      commands.push_back("."); // terminate
+      commands.push_back("go");// go to a certain value
+      commands.push_back("init");
+      commands.push_back("on");
+      commands.push_back("off"); // 5
+      commands.push_back("set");
+      commands.push_back("exit");
+      commands.push_back("setvolt");
+      commands.push_back("setspeed");
+      commands.push_back("reset"); // 10
+      commands.push_back("break");
+      commands.push_back("vmode");
+      commands.push_back("pmode");
+      commands.push_back("getpos");
 
 }
 
 int stepper_motor::emsg(int a){
-    fprintf(stderr, "%s\n",errormessage[a]);
+    qDebug()<<(errormessage[a]).c_str();
     return a;
   }
 
@@ -94,7 +96,7 @@ int stepper_motor::parse_command(char * cmd) { // returns  0 on success, or erro
       idx=0;   // no command //
   } else {
       // get command number //
-      for(idx=NUMCOMMANDS;(idx>0)&&(strcmp(cmdi2,commands[idx]));idx--);
+      for(idx=NUMCOMMANDS;(idx>0)&&(strcmp(cmdi2,(commands[idx]).c_str()));idx--);
   };
   retval=0;
 #ifdef DEBUG
@@ -296,7 +298,6 @@ int stepper_motor::main_func(char * command) {
   return 0;
 }
 
-/*=======================
 int stepper_motor::go(int motnum, int steps) {
 
         if (motnum<0 || motnum>2) {return(emsg(3));};
@@ -339,8 +340,7 @@ int stepper_motor::init(int motnum, double involts, int inspeed) { // init comma
 int stepper_motor::set(int motnum, int steps) {  //not sure if that's working as intended
 
     if (!is_motor_ready(motnum)) {return(emsg(4));};
-    ioctl(handle, SM32Post| mcPosition | MOT[motnum], steps);
-
+    ioctl(handle, SM32Post| mcPosition | MOT[motnum], (steps-zeroposition[motnum]));
 }
 
 int stepper_motor::setvolt(int motnum, double involts) {
@@ -422,5 +422,17 @@ int stepper_motor::pmode(int motnum) {
     ioctl(handle,SM32Post | mcPosMode | MOT[motnum],(movemode[motnum]?mmMove:mmPos));
 }
 
-//"off"
-*/
+int stepper_motor::setzero(int motnum) {
+
+    if (motnum<0 || motnum>2) {return(emsg(3));};
+    if (!is_motor_ready(motnum)) {return(emsg(4));};
+    int position;
+    getpos(motnum, position);
+    zeroposition[motnum] = position;
+}
+
+int stepper_motor::getnumbofsteps() {
+
+    return NUMBOFSTEPS;
+}
+
