@@ -1,4 +1,5 @@
 #include "calibrate.h"
+#include <cmath>
 
 calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
 {
@@ -42,11 +43,23 @@ int calibrate::firstpeak(double wavelength) {
 
 }
 
-int calibrate::predictposition(double wavelength){
+double calibrate::predictposition(double wavelength){
+    //Wavelength is in nm output is in degree
+    double theta=0;
+    double l=wavelength;
+    theta= std::acos((4*gratingconstant*wavelength*cos(blazingangle)*sin(blazingangle) -
+                      4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) -
+                         pow(gratingconstant,2)*pow(wavelength,2)*pow(sin(blazingangle),4) -
+                         2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
+                    (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(gratingconstant),2) + pow(cos(gratingconstant),4) +
+                        2*pow(sin(blazingangle),2) + 2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) +
+                        pow(sin(blazingangle),4))));
+
+
 
 }
 
-int calibrate::addpeak(double wavelength) {
+double calibrate::addpeak(double wavelength) {
 
     int position = predictposition(wavelength);
     double maxcount = 0;

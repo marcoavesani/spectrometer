@@ -14,11 +14,11 @@ class calibrate : public QWidget
 public:
     explicit calibrate( stepper_motor *step, counting *count,QWidget *parent = 0);
     int firstpeak(double wavelength); //if there is no calibration file the first peak has to added with this function
-    int addpeak(double wavelength);
+    double addpeak(double wavelength);
     void docalib();
 
 private:
-    int predictposition(double wavelength); //estimates peak position for given wavelength with default calibration
+    double calibrate::addpeak(double wavelength) ; //estimates peak position for given wavelength with default calibration
 
     int searcharea = 1000; //area around predicted peak position in which peak will be searched for
     std::string calibpath; //where calibration file will looked for/go to
@@ -30,7 +30,7 @@ private:
     unsigned long integtime; //needs to be initialized with proper value
     int maxtimesl; //needs to be initialized with proper value
     double blazingangle = ; // in radian
-    int gratingconstant = ; //lines per meter
+    double gratingconstant = ; //lines per meter
 
 
 signals:
