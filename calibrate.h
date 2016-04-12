@@ -31,8 +31,8 @@ private:
     unsigned long integtime=1000;
     //int maxtimesl; //needs to be initialized with proper value
 
-    double blazingangle = 28.68; // in Degree
-    int gratingconstant =1./( 1.66666); //inverse of( distance between two lines in nm)
+    double blazingangle = M_PI*((28.68)/180); // in Rad
+    double gratingconstant =( 1.66666*pow(10,3)); //inverse of( distance between two lines in nm)
     int stepsize;
 
 signals:

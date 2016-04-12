@@ -330,7 +330,7 @@ int stepper_motor::go(int motnum, int steps) {
         if (waitmode)
             if (!is_motor_there(motnum)) {return(emsg(5));};
         nanosleep(&twenty_millisec,&time_left);
-    return(emsg(2));
+    return(0);
 }
 
 int stepper_motor::init(int motnum, double involts, int inspeed) { // init command //

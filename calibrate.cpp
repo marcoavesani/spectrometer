@@ -1,7 +1,7 @@
 #include "calibrate.h"
 #include <cmath>
 #include <QDebug>
-
+using namespace std;
 calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
 {
 
@@ -13,9 +13,10 @@ calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : 
 }
 
 int calibrate::firstpeak(double wavelength) {
-    step_mot_point->setzero(motnum);
-    step_mot_point->go(motnum,predictposition(wavelength));
-
+    //step_mot_point->set(motnum,0);
+    step_mot_point->go(motnum,int (((predictposition(wavelength))/360)*step_mot_point->getnumbofsteps()));
+    qDebug()<< predictposition(wavelength);
+    qDebug()<< int (((predictposition(wavelength))/360)*step_mot_point->getnumbofsteps());
 
 
 
@@ -55,16 +56,18 @@ int calibrate::firstpeak(double wavelength) {
 }
 
 double calibrate::predictposition(double wavelength){
-    //Wavelength is in nm output is in degree
+    //Wavelength is in nm output is in radians
     double theta=0;
     double l=wavelength;
-    theta= std::acos((4*gratingconstant*wavelength*cos(blazingangle)*sin(blazingangle) -
+    theta= -1*(std::acos((4*gratingconstant*wavelength*cos(blazingangle)*sin(blazingangle) -
                       4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) -
                          pow(gratingconstant,2)*pow(wavelength,2)*pow(sin(blazingangle),4) -
                          2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
                     (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(gratingconstant),2) + pow(cos(gratingconstant),4) +
                         2*pow(sin(blazingangle),2) + 2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) +
-                        pow(sin(blazingangle),4))));
+                        pow(sin(blazingangle),4)))));
+
+    return (((theta)*180)/M_PI);
 
 
 

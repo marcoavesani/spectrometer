@@ -25,3 +25,12 @@ void MainWindow::on_pushButton_2_clicked()
 double valuewl(double wl){
     return wl;
 }
+
+double gotosignal(double pos){
+    return pos;
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    emit gotosignal(ui->doubleSpinBox_3->value());
+}

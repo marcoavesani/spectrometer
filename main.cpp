@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     counting count;
     calibrate calibration(&motor,&count);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
+   // calibration.firstpeak(1549.855);
    motor.go(0,0);
    // motor.go(1,1000000000);
    // motor.go(2,1000000000);
