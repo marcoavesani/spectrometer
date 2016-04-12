@@ -61,6 +61,7 @@ stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
 }
 
  stepper_motor::~stepper_motor(){ //Custom Destructor
+
      ::close(handle);
 }
 

@@ -14,20 +14,20 @@ int main(int argc, char *argv[])
     counting count;
     calibrate calibration(&motor,&count);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
-   // calibration.firstpeak(1549.855);
-   motor.go(0,0);
+    calibration.firstpeak(1550);
+  // motor.go(0,0);
    // motor.go(1,1000000000);
    // motor.go(2,1000000000);
    // std::string acommands="set 0 100000";
    //motor.parse_command("init 0 3.1 1000");
    //motor.parse_command("on 0");
    //motor.parse_command("go 0 100000000");
-/*
 
-    int final_count=0;
-    //count.getcount(final_count,1000,100);
+
+    //int final_count=0;
+    //count.getcount(final_count,1000);
     // count.emsg(2);
-    std::cout<<final_count<<std::endl;
+    //std::cout<<final_count<<std::endl;
     //motor.parse_command("go 1 10");
     //std::cout<<count.optind<<std::endl;*/
     return a.exec();

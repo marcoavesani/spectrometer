@@ -150,22 +150,22 @@ int counting::getcount(int &finalcount, unsigned long integtime) {
   int uwert;
   if (integtime > MAX_INTEGTIME || integtime < 0) return emsg(1);
   if (maxtimesl <1 || maxtimesl > DEFAULT_MAXTIMESLOT) return emsg(7);
-  std::cout<<"Debug"<<std::endl;
+ // std::cout<<"Debug"<<std::endl;
   /* open counter card driver */
   if ((fh=open(BOARDNAME,O_RDWR)) == -1) {
     if (errno == EBUSY) { return -emsg(2);}
     else { return -emsg(3);};
   };
-   std::cout<<"Debug"<<std::endl;
+   //std::cout<<"Debug"<<std::endl;
   /* calculate real integration time in elementary steps */
   while (integtime >0) {
     integtime1=(integtime>maxtimesl?maxtimesl:integtime);
     integtime-=integtime1;
-std::cout<<"Debug"<<std::endl;
+//std::cout<<"Debug"<<std::endl;
 
     /* reset/unreset counter chip */
     ioctl(fh,TIMER_RESET);
-std::cout<<"Debug"<<std::endl;
+//std::cout<<"Debug"<<std::endl;
     /* prepare counter 2 as 1 kHz heartbeat for the gate output */
     ioctl(fh,SET_USER_PERIODE_2, 0xffff-20000+2);
     ioctl(fh,SET_USER_PULSE_2, 0xffff-10000+1);

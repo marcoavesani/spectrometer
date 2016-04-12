@@ -10,13 +10,25 @@ calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : 
     stepsize = int(0.0171892/360*(step->getnumbofsteps()));
     searcharea=500*(0.0171892/360*(step->getnumbofsteps()));
     motnum=0;
+    step_mot_point->go(0,0);
+    step_mot_point->go(1,0);
+    step_mot_point->go(2,0);
 }
 
+calibrate::~calibrate(){
+    step_mot_point->go(0,0);
+    step_mot_point->go(1,0);
+    step_mot_point->go(2,0);
+}
 int calibrate::firstpeak(double wavelength) {
-    //step_mot_point->set(motnum,0);
-    step_mot_point->go(motnum,int (((predictposition(wavelength))/360)*step_mot_point->getnumbofsteps()));
+    step_mot_point->set(motnum,0);
+    step_mot_point->go(motnum,int (((predictposition(wavelength))/(2*M_PI))*step_mot_point->getnumbofsteps()));
     qDebug()<< predictposition(wavelength);
-    qDebug()<< int (((predictposition(wavelength))/360)*step_mot_point->getnumbofsteps());
+    qDebug()<< int (((predictposition(wavelength))/(2*M_PI))*step_mot_point->getnumbofsteps());
+
+    std::ofstream fileout;
+    fileout.open("./fileout",std::ofstream::out | std::ofstream::app);
+    fileout <<wavelength<< "/t"<<(predictposition(wavelength)/(2*M_PI))*360<<endl;
 
 
 
@@ -69,10 +81,10 @@ double calibrate::predictposition(double wavelength){
 
 
     if(wavelength>1403.56) {
-        return (getangle(wavelength));
+        return (-1*getangle(wavelength));
     }
     else {
-        return (-1*getangle(wavelength));
+        return (1*getangle(wavelength));
     }
 
 }
@@ -82,20 +94,22 @@ int calibrate::addpeak(double wavelength) {
     std::ofstream fileout;
     fileout.open("./fileout",std::ofstream::out | std::ofstream::app);
 
-    int position = predictposition(wavelength);
+    int position = (predictposition(wavelength)/(2*M_PI))*step_mot_point->getnumbofsteps();
     double maxcount = 0;
     int maxcountposition = 0;
-    step_mot_point->set(motnum, position-(searcharea/2));
+    //step_mot_point->set(motnum, position-(searcharea/2));
 
     for(int i = 0; i<searcharea; i++) {
 
         int events = 0;
-        step_mot_point->go(motnum, stepsize);
+        step_mot_point->go(motnum, position-i*stepsize);
         counting_point->getcount(events, integtime);
-        maxcountposition = (maxcount>events?(position-searcharea+i):maxcountposition);
+        qDebug()<<events;
+        maxcountposition = (maxcount>events?(position-i*stepsize):maxcountposition);
         maxcount = (maxcount>events?maxcount:events);
-    }
 
+    }
+     qDebug()<<maxcount;
     positions.push_back(360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps());
     wavelengths.push_back(wavelength);
 
@@ -110,11 +124,17 @@ void calibrate::changestepsize(double angle) {
 
 double calibrate::getangle(double l){
 
-    return (std::acos((4*gratingconstant*l*cos(blazingangle)*sin(blazingangle) +
+  /*  return (std::acos((4*gratingconstant*l*cos(blazingangle)*sin(blazingangle) +
                        4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) -
                           pow(gratingconstant,2)*pow(l,2)*pow(sin(blazingangle),4) -
                           2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
                      (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(gratingconstant),2) + pow(cos(gratingconstant),4) +
                          2*pow(sin(blazingangle),2) + 2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) +
                          pow(sin(blazingangle),4)))));
+                         */
+    return acos((4*gratingconstant*l*cos(blazingangle)*sin(blazingangle) +
+                 4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) - pow(gratingconstant,2)*pow(l,2)*pow(sin(blazingangle),4) -
+                    2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
+               (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(blazingangle),2) + pow(cos(blazingangle),4) + 2*pow(sin(blazingangle),2) +
+                   2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) + pow(sin(blazingangle),4))));
 }

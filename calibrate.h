@@ -13,6 +13,7 @@ class calibrate : public QWidget
     Q_OBJECT
 public:
     explicit calibrate( stepper_motor *step, counting *count,QWidget *parent = 0);
+    ~calibrate();
     int firstpeak(double wavelength); //moves to the position where you expect maximal emission according to the grating equation
     int addpeak(double wavelength);
     void docalib();
