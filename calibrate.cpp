@@ -57,9 +57,7 @@ int calibrate::firstpeak(double wavelength) {
 
 double calibrate::predictposition(double wavelength){
     //Wavelength is in nm output is in radians
-    double theta=0;
-    double l=wavelength;
-    theta= -1*(std::acos((4*gratingconstant*wavelength*cos(blazingangle)*sin(blazingangle) -
+    /*theta= -1*(std::acos((4*gratingconstant*wavelength*cos(blazingangle)*sin(blazingangle) -
                       4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) -
                          pow(gratingconstant,2)*pow(wavelength,2)*pow(sin(blazingangle),4) -
                          2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
@@ -67,9 +65,15 @@ double calibrate::predictposition(double wavelength){
                         2*pow(sin(blazingangle),2) + 2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) +
                         pow(sin(blazingangle),4)))));
 
-    return (((theta)*180)/M_PI);
+    return (((theta)*180)/M_PI); */
 
 
+    if(wavelength>1403.56) {
+        return (getangle(wavelength));
+    }
+    else {
+        return (-1*getangle(wavelength));
+    }
 
 }
 
@@ -104,3 +108,13 @@ void calibrate::changestepsize(double angle) {
     stepsize = (int)angle/360*step_mot_point->getnumbofsteps();
 }
 
+double calibrate::getangle(double l){
+
+    return (std::acos((4*gratingconstant*l*cos(blazingangle)*sin(blazingangle) +
+                       4*sqrt(2*pow(gratingconstant,4)*pow(sin(blazingangle),4) -
+                          pow(gratingconstant,2)*pow(l,2)*pow(sin(blazingangle),4) -
+                          2*pow(gratingconstant,4)*cos(2*blazingangle)*pow(sin(blazingangle),4)))/
+                     (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(gratingconstant),2) + pow(cos(gratingconstant),4) +
+                         2*pow(sin(blazingangle),2) + 2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) +
+                         pow(sin(blazingangle),4)))));
+}
