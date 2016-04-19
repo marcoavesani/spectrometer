@@ -328,6 +328,12 @@ int stepper_motor::go(int motnum, int steps) {
         // do it //
         if (!is_motor_ready(motnum)) {return(emsg(4));};
         ioctl(handle,SM32Post | mcGo | MOT[motnum], steps);
+        qDebug() << "got here";
+
+        while (get_mot_pos(motnum)!=steps) {
+
+        }
+
         if (waitmode)
             if (!is_motor_there(motnum)) {return(emsg(5));};
         nanosleep(&twenty_millisec,&time_left);

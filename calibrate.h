@@ -21,8 +21,8 @@ public:
 
 private:
 
-    double predictposition(double wavelength);
-    double getangle(double l);
+    int predictposition(double wavelength);
+    //double getangle(double l);
     int searcharea; //area around predicted peak position in which peak will be searched for
     std::string calibpath; //where calibration file will looked for/go to
     std::vector<double> wavelengths;

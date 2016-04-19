@@ -90,6 +90,7 @@ int counting::counting_function(int argc, char *argv[]) {
 
     /* prepare counter 2 as 1 kHz heartbeat for the gate output */
     ioctl(fh,SET_USER_PERIODE_2, 0xffff-20000+2);
+    //ioctl(fh,SET_USER_PERIODE_2, 1);
     ioctl(fh,SET_USER_PULSE_2, 0xffff-10000+1);
     ioctl(fh,SET_USER_CONTROL_2, SELECT_INTERNAL_CLOCK | USER_GATE_HIGH |
       CONTINUOUS_INCR_MODE | OUTPUT_HIGH_ACTIVE|ONESHOT_TRIGGER_ENABLE);
