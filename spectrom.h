@@ -17,12 +17,12 @@ class spectrom : public QWidget
     Q_OBJECT
 public:
     explicit spectrom(QWidget *parent = 0);
-    double spect_function();
+    double stepstowavelength(int steps);
+
 
 
 private:
-    vector < vector< double> > calib;
-    vector < double> coeff_poly;
+    vector < double> coeff_poly = {-269.685, 0.0069944, 0.00000000631545};
 
 
 

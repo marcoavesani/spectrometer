@@ -13,6 +13,8 @@ calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : 
     step_mot_point->go(0,0);
     step_mot_point->go(1,0);
     step_mot_point->go(2,0);
+
+
 }
 
 calibrate::~calibrate(){
@@ -73,8 +75,7 @@ int calibrate::firstpeak(double wavelength) {
 int calibrate::predictposition(double wavelength){
     //returns in steps. if you make a new spectroscope linear model should be sufficient
 
-return (-5568500000+14295300*wavelength+-13760.8*pow(wavelength,2)
-        +5.88652*pow(wavelength,3)-0.000944215*pow(wavelength,4));
+return (-2593400+3390.29*wavelength+-1.28168*pow(wavelength,2));
 }
 
 int calibrate::addpeak(double wavelength) {
@@ -97,6 +98,7 @@ int calibrate::addpeak(double wavelength) {
 
         int events = 0;
         step_mot_point->go(motnum, position+i*stepsize-searcharea/2);
+        sleep(1);
         counting_point->getcount(events, integtime);
         qDebug()<<events;
         maxcountposition = (maxcount>events?(position+i*stepsize-searcharea/2):maxcountposition);

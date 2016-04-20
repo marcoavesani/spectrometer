@@ -1,5 +1,4 @@
 #include "stepper_motor.h"
-#include <QDebug>
 #include <iostream>
 
 stepper_motor::stepper_motor(QWidget *parent) : QWidget(parent)
@@ -466,3 +465,13 @@ int stepper_motor::getnumbofsteps() {
     return NUMBOFSTEPS;
 }
 
+ bool stepper_motor::isthedeviceopen() {
+
+     if(handle==-1){
+         return false;
+     }
+     else{
+         return true;
+     }
+
+ }

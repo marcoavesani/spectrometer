@@ -11,6 +11,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     stepper_motor motor;
+    if(motor.isthedeviceopen()==false){
+        qDebug()<<"ERROR MOTOR NOT FOUND LAUNCHING DESTRUCTOR";
+        return 1;
+    }
     counting count;
     calibrate calibration(&motor,&count);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
