@@ -16,6 +16,7 @@ public:
     ~calibrate();
     int firstpeak(double wavelength); //moves to the position where you expect maximal emission according to the grating equation
     int addpeak(double wavelength);
+    int scan(double shortestwavelength, double longestwavelength, double precision, std::vector<int> &position, std::vector<int> &count);
     void docalib();
     void changestepsize(double angle); //Change stepsize in degree
 
@@ -30,7 +31,7 @@ private:
     int motnum = 0;
     stepper_motor * step_mot_point;
     counting * counting_point;
-    unsigned long integtime=1000;
+    unsigned long integtime=10000;
     //int maxtimesl; //needs to be initialized with proper value
 
     double blazingangle = M_PI*((28.68)/180); // in Rad

@@ -4,6 +4,7 @@
 #include "stepper_motor.h"
 #include "counting.h"
 #include "calibrate.h"
+#include "spectrom.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,10 +12,18 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     stepper_motor motor;
+    if(motor.isthedeviceopen()==false){
+        qDebug()<<"ERROR MOTOR NOT FOUND LAUNCHING DESTRUCTOR";
+        return 1;
+    }
     counting count;
     calibrate calibration(&motor,&count);
+    spectrom spectrometer(&calibration);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
-    calibration.firstpeak(1550);
+
+    spectrometer.scanandplot(1540,1550,0.01);
+    spectrometer.savedataas("./spectrum");
+
   // motor.go(0,0);
    // motor.go(1,1000000000);
    // motor.go(2,1000000000);

@@ -2,7 +2,10 @@
 #define SPECTROM_H
 
 #include <vector>
+#include <string>
 #include <QWidget>
+#include "calibrate.h"
+#include "iostream"
 //This class will be used for the calculation of the diffraction and for the calibration
 
 //The calibration will be done in this way.. Once the wavelength is provided the program scans all the angles for the maximum intensity..
@@ -16,13 +19,20 @@ class spectrom : public QWidget
 {
     Q_OBJECT
 public:
-    explicit spectrom(QWidget *parent = 0);
-    double spect_function();
+    explicit spectrom(QWidget *parent = 0, calibrate * calib = NULL);
+    double stepstowavelength(int steps);
+    int compensatecounts(int steps, int counts); //uses empirical fit to compensate the wavelength dependent efficiency of the components
+    int scanandplot(double shortestwavelength, double longestwavelength, double precision);
+    int savedataas(string nameoffile);
+
 
 
 private:
-    vector < vector< double> > calib;
-    vector < double> coeff_poly;
+    vector < double> coeff_poly = {-269.685, 0.0069944, 0.00000000631545};
+    vector < double> power_poly = {1};
+    vector <double> wavelength;
+    vector <int> count;
+    calibrate * calib_point;
 
 
 

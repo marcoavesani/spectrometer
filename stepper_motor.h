@@ -1,7 +1,7 @@
 #ifndef STEPPER_MOTOR_H
 #define STEPPER_MOTOR_H
 #include <QWidget>
-
+#include <QDebug>
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -60,6 +60,7 @@ public:
     int getpos(int motnum, int &position);
     int setzero(int motnum);
     int getnumbofsteps();
+    bool isthedeviceopen();
     std::vector <std::string> commands;
 
 
