@@ -5,29 +5,32 @@
 #-------------------------------------------------
 
 QT       += core gui
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 `root-config --cflags --glibs`
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = untitled
 TEMPLATE = app
+INCLUDEPATH += /usr/include/root
+
+        LIBS += $$system(root-config --glibs)
+
+        INCLUDEPATH += $(ROOTSYS)/include
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     stepper_motor.cpp \
-    spectrom.cpp \
     counting.cpp \
-    calibrate.cpp
+    spectrometer.cpp
 
 
 HEADERS  += mainwindow.h \
     stepper_motor.h \
-    spectrom.h \
     sm32_2.h \
     counting.h \
     dt304.h \
-    calibrate.h
+    spectrometer.h
 
 
 FORMS    += mainwindow.ui

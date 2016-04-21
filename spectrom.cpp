@@ -1,11 +1,7 @@
-#include "spectrom.h"
 
-spectrom::spectrom(QWidget *parent, calibrate * calib) : QWidget(parent)
-{
-    calib_point=calib;
-}
 
-double spectrom::stepstowavelength(int steps){
+
+double calibrate::stepstowavelength(int steps){
 
     double wavelength=0;
 
@@ -17,7 +13,7 @@ double spectrom::stepstowavelength(int steps){
     return wavelength;
 }
 
-int spectrom::compensatecounts(int steps, int counts){
+int calibrate::compensatecounts(int steps, int counts){
 
     double compensation=0;
 
@@ -30,10 +26,10 @@ int spectrom::compensatecounts(int steps, int counts){
 }
 
 
-int spectrom::scanandplot(double shortestwavelength, double longestwavelength, double precision) {
+int calibrate::scanandplot(double shortestwavelength, double longestwavelength, double precision) {
 
     vector <int> position;
-    calib_point->scan(shortestwavelength,longestwavelength,precision,position,count);
+    scan(shortestwavelength,longestwavelength,precision,position,count);
     wavelength = {};
 
     for(int i = 0; i < position.size(); i++){
@@ -43,7 +39,7 @@ int spectrom::scanandplot(double shortestwavelength, double longestwavelength, d
     }
 }
 
-int spectrom::savedataas( string nameoffile ) {
+int calibrate::savedataas( string nameoffile ) {
 
     ofstream fileout;
     fileout.open(nameoffile,std::ofstream::out);

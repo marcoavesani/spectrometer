@@ -3,26 +3,37 @@
 #include <iostream>
 #include "stepper_motor.h"
 #include "counting.h"
-#include "calibrate.h"
-#include "spectrom.h"
+#include "spectrometer.h"
+#include "TApplication.h"
+#include "TCanvas.h"
+#include "TSystem.h"
+#include "TStyle.h"
+#include "TH1D.h"
+
+
 
 int main(int argc, char *argv[])
-{
+
+{   TApplication app ("A",0,0);
+    app.SetReturnFromRun(kTRUE);
+
+    gStyle-> SetCanvasPreferGL(kTRUE);
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+    /*
     stepper_motor motor;
     if(motor.isthedeviceopen()==false){
         qDebug()<<"ERROR MOTOR NOT FOUND LAUNCHING DESTRUCTOR";
         return 1;
     }
     counting count;
-    calibrate calibration(&motor,&count);
-    spectrom spectrometer(&calibration);
-    QObject::connect(&w, &MainWindow::valuewl,&calibration , &calibrate::addpeak );
+    spectrometer calibration(&motor,&count);
+    QObject::connect(&w, &MainWindow::valuewl,&calibration , &spectrometer::addpeak );
 
-    spectrometer.scanandplot(1540,1550,0.01);
-    spectrometer.savedataas("./spectrum");
+
+    calibration.scanandplot(1605,1605.5,0.05);
+    calibration.savedataas("./temp");
 
   // motor.go(0,0);
    // motor.go(1,1000000000);
@@ -39,5 +50,9 @@ int main(int argc, char *argv[])
     //std::cout<<final_count<<std::endl;
     //motor.parse_command("go 1 10");
     //std::cout<<count.optind<<std::endl;*/
+    TCanvas * c1= new TCanvas("c1");
+    TH1D * histo=new TH1D ("th1","th1",1000,0,1000);
+    histo->Draw();
+
     return a.exec();
 }

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <QWidget>
-#include "calibrate.h"
+#include "spectrometer.h"
 #include "iostream"
 //This class will be used for the calculation of the diffraction and for the calibration
 
@@ -19,7 +19,7 @@ class spectrom : public QWidget
 {
     Q_OBJECT
 public:
-    explicit spectrom(QWidget *parent = 0, calibrate * calib = NULL);
+    explicit spectrom( calibrate * calib,QWidget *parent = 0);
     double stepstowavelength(int steps);
     int compensatecounts(int steps, int counts); //uses empirical fit to compensate the wavelength dependent efficiency of the components
     int scanandplot(double shortestwavelength, double longestwavelength, double precision);

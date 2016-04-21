@@ -1,14 +1,14 @@
-#include "calibrate.h"
+#include "spectrometer.h"
 #include <cmath>
 #include <QDebug>
 using namespace std;
-calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
+spectrometer::spectrometer(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
 {
 
     step_mot_point=step;
     counting_point=count;
     stepsize = int(0.00171892/360*(step->getnumbofsteps()));
-    searcharea=100*(0.00171892/360*(step->getnumbofsteps()));
+    searcharea=300*(0.00171892/360*(step->getnumbofsteps()));
     motnum=0;
     step_mot_point->go(0,0);
     step_mot_point->go(1,0);
@@ -17,15 +17,15 @@ calibrate::calibrate(stepper_motor * step, counting * count, QWidget *parent) : 
 
 }
 
-calibrate::~calibrate(){
+spectrometer::~spectrometer(){
     step_mot_point->go(0,0);
     step_mot_point->go(1,0);
     step_mot_point->go(2,0);
 }
-int calibrate::firstpeak(double wavelength) {
+int spectrometer::firstpeak(double atwavelength) {
     //step_mot_point->set(motnum,0);
-    step_mot_point->go(motnum,predictposition(wavelength));
-    qDebug()<< predictposition(wavelength);
+    step_mot_point->go(motnum,predictposition(atwavelength));
+    qDebug()<< predictposition(atwavelength);
 
     /*int events=0;
     counting_point->getcount(events, integtime);
@@ -33,7 +33,7 @@ int calibrate::firstpeak(double wavelength) {
 
     std::ofstream fileout;
     fileout.open("./fileout",std::ofstream::out | std::ofstream::app);
-    fileout <<wavelength<< " "<<(predictposition(wavelength)/step_mot_point->getnumbofsteps()*360)<<endl;
+    fileout <<atwavelength<< " "<<(predictposition(atwavelength)/step_mot_point->getnumbofsteps()*360)<<endl;
 
 
 
@@ -72,24 +72,24 @@ int calibrate::firstpeak(double wavelength) {
 
 }
 
-int calibrate::predictposition(double wavelength){
+int spectrometer::predictposition(double iswavelength){
     //returns in steps. if you make a new spectroscope linear model should be sufficient
 
-return (-2593400+3390.29*wavelength+-1.28168*pow(wavelength,2));
+return (-2593400+3390.29*iswavelength+-1.28168*pow(iswavelength,2));
 }
 
-int calibrate::addpeak(double wavelength) {
-    qDebug()<<wavelength;
+int spectrometer::addpeak(double atwavelength) {
+    qDebug()<<atwavelength;
     std::ofstream fileout;
     fileout.open("./fileout",std::ofstream::out | std::ofstream::app);
     qDebug() << "filout:" << fileout.is_open();
-    fileout << "peak at " << wavelength << "nm" << std::endl;
+    fileout << "peak at " << atwavelength << "nm" << std::endl;
 
     std::ofstream forplot;
     forplot.open("./forplot",std::ofstream::out);
     qDebug() << "forplot:" << forplot.is_open();
 
-    int position = predictposition(wavelength);
+    int position = predictposition(atwavelength);
     double maxcount = 0;
     int maxcountposition = 0;
     //step_mot_point->set(motnum, position-(searcharea/2));
@@ -98,7 +98,7 @@ int calibrate::addpeak(double wavelength) {
 
         int events = 0;
         step_mot_point->go(motnum, position+i*stepsize-searcharea/2);
-        sleep(1);
+        sleep(0.1);
         counting_point->getcount(events, integtime);
         qDebug()<<events;
         maxcountposition = (maxcount>events?(position+i*stepsize-searcharea/2):maxcountposition);
@@ -107,31 +107,28 @@ int calibrate::addpeak(double wavelength) {
 
     }
      qDebug()<<maxcount;
-    positions.push_back(360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps());
-    wavelengths.push_back(wavelength);
+    //positions.push_back(360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps());
+    //wavelengths.push_back(atwavelength);
 
-    fileout<<wavelength<<'/t'<<360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps()<<std::endl;
+    fileout<<atwavelength<<'/t'<<360*(double)maxcountposition/(double)step_mot_point->getnumbofsteps()<<std::endl;
     fileout.close();
     forplot.close();
 }
 
-int calibrate::scan(double shortestwavelength, double longestwavelength, double precision, vector <int> &position, vector <int> &count){
+int spectrometer::scan(double shortestwavelength, double longestwavelength, double precision, vector <double> &lambdas, vector <int> &count){
 
-    position, count = {}; //make sure vectors are empty
+    lambdas, count = {}; //make sure vectors are empty
 
-    int fromposit = predictposition(shortestwavelength)<predictposition(longestwavelength)? //go from wavelengths to stepper position and make sure you start from the lower value
-                       predictposition(shortestwavelength):predictposition(longestwavelength);
 
-    int toposit = (predictposition(shortestwavelength)==fromposit)?
-                predictposition(longestwavelength):predictposition(longestwavelength);
+    double temp = shortestwavelength;
 
-    int increment = abs(predictposition((shortestwavelength+longestwavelength)/2)
-            -predictposition((shortestwavelength+longestwavelength)/2+precision));
+    if(shortestwavelength > longestwavelength) {shortestwavelength = longestwavelength; longestwavelength = temp;}
 
-    for(int i = fromposit; i <= toposit; i += increment ) { //scan and fill the vectors
+    for(double i = shortestwavelength; i <= longestwavelength; i += precision ) { //scan and fill the vectors
 
-        step_mot_point->go(motnum, i);
-        position.push_back(i);
+        step_mot_point->go(motnum, predictposition(i));
+        lambdas.push_back(i);
+
         int events;
         counting_point->getcount(events, integtime);
         count.push_back(events);
@@ -142,12 +139,12 @@ int calibrate::scan(double shortestwavelength, double longestwavelength, double 
 
 
 
-void calibrate::changestepsize(double angle) {
+void spectrometer::changestepsize(double angle) {
 
     stepsize = (int)angle/360*step_mot_point->getnumbofsteps();
 }
 
-/*double calibrate::getangle(double l){
+/*double spectrometer::getangle(double l){
 
 
     return acos((4*gratingconstant*l*cos(blazingangle)*sin(blazingangle) +
@@ -156,3 +153,62 @@ void calibrate::changestepsize(double angle) {
                (2.*pow(gratingconstant,2)*(1 - 2*pow(cos(blazingangle),2) + pow(cos(blazingangle),4) + 2*pow(sin(blazingangle),2) +
                    2*pow(cos(blazingangle),2)*pow(sin(blazingangle),2) + pow(sin(blazingangle),4))));
 }*/
+
+
+
+
+double spectrometer::stepstowavelength(int steps){
+
+    double iswavelength=0;
+
+    for ( int i=0; i<coeff_poly.size(); i++) {
+
+        iswavelength += coeff_poly[i]*pow(steps,i);
+    }
+
+    return iswavelength;
+}
+
+int spectrometer::compensatecounts(int steps, int counts){
+
+    double compensation=0;
+
+    for ( int i=0; i<power_poly.size(); i++) {
+
+        compensation += power_poly[i]*pow(steps,i);
+    }
+
+    return (counts/compensation);
+}
+
+
+int spectrometer::scanandplot(double shortestwavelength, double longestwavelength, double precision) {
+
+    wavelength = {};
+    scan(shortestwavelength,longestwavelength,precision,wavelength,count);
+
+
+    for(int i = 0; i < wavelength.size(); i++){
+
+        count[i] = compensatecounts(predictposition(wavelength[i]),count[i]);
+    }
+}
+
+int spectrometer::savedataas( std::string nameoffile ) {
+
+    ofstream fileout;
+    fileout.open(nameoffile,std::ofstream::out);
+
+    if(!fileout.is_open()) {
+
+        return 1;
+        qDebug() << "unable to open file";
+    }
+
+    for(int i = 0; i < wavelength.size(); i++) {
+
+        fileout << wavelength[i] << " " << count[i] << endl;
+    }
+}
+
+//
