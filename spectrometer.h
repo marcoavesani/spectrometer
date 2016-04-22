@@ -6,6 +6,16 @@
 #include "stepper_motor.h"
 #include <QWidget>
 #include <fstream>
+#include "TFile.h"
+#include <algorithm>
+#include "TH1D.h"
+#include "TF1.h"
+#include "TApplication.h"
+#include "TSystem.h"
+#include "TCanvas.h"
+#include "Math/Minimizer.h"
+
+
 
 class spectrometer : public QWidget
 {
@@ -18,11 +28,12 @@ public:
     int scan(double shortestwavelength, double longestwavelength, double precision, std::vector<double> &lambdas, std::vector<int> &count);
     void docalib();
     void changestepsize(double angle); //Change stepsize in degree
-
+    std::vector< double> fitgaus(std::string filename);
     double stepstowavelength(int steps);
     int compensatecounts(int steps, int counts); //uses empirical fit to compensate the wavelength dependent efficiency of the components
     int scanandplot(double shortestwavelength, double longestwavelength, double precision);
     int savedataas(std::string nameoffile);
+    void automatic_calibration(double initial_w, double final_w, double res);
 
 
 private:

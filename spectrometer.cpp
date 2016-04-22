@@ -211,4 +211,60 @@ int spectrometer::savedataas( std::string nameoffile ) {
     }
 }
 
-//
+vector<double> spectrometer::fitgaus(string filename){
+
+  //gStyle->SetY(0);
+  ifstream filein_gaus;
+  filein_gaus.open(filename.c_str());
+  double steps_temp,count_temp;
+  vector <double> step_v;
+  vector <double > count_v;
+  vector<double> result;
+  if(filein_gaus.is_open()){
+   while(!(filein_gaus.eof())){
+     if (!filein_gaus.good()){
+       break;
+     }
+     filein_gaus>>steps_temp;
+     filein_gaus>>count_temp;
+     step_v.push_back(steps_temp);
+     count_v.push_back(count_temp);
+     std::cout<<steps_temp<<endl;
+   }
+    auto max_i= max_element(std::begin(step_v), std::end(step_v));
+    auto min_i = min_element(std::begin(step_v), std::end(step_v)); // c++11
+    long max=*max_i;
+    long min=*min_i;
+    std::string res="res_"+filename;
+    TH1D * histo= new TH1D(filename.c_str(),filename.c_str(),step_v.size()-2,min,max);
+    TH1D * residuals= new TH1D( res.c_str(),res.c_str(),step_v.size()-2,min,max);
+    //histo->SetDefaultSumw2(kFALSE);
+    //residuals->SetDefaultSumw2(kFALSE);
+
+    TF1 gaus("gaus","gaus(0)",min,max);
+    TF1 gaus_back("gaus_back","gaus(0)+pol0(3)",min,max);
+    for(int i=0; i<step_v.size();i++){
+      histo->SetBinContent(histo->FindBin(step_v[i]),count_v[i]);
+    }
+
+
+   histo->Fit(&gaus);
+   gaus_back.SetParameters(gaus.GetParameter(0),gaus.GetParameter(1),gaus.GetParameter(2),1);
+   histo->Fit(&gaus_back,"MIE");
+   TFile file("hsimple.root","update");
+   for(int i=0; i<histo->GetNbinsX();i++){
+      residuals->SetBinContent(i,(histo->GetBinContent(i)-gaus_back(histo->GetBinCenter(i))));
+    }
+   histo->Write();
+   residuals->Write();
+   for(int i=0;i<4;i++){
+    double temp=0;
+    temp=gaus_back.GetParameter(i);
+    result.push_back(temp);
+   }
+    file.Close();
+  }
+
+   return result;
+
+}

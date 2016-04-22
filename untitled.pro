@@ -13,7 +13,7 @@ TARGET = untitled
 TEMPLATE = app
 INCLUDEPATH += /usr/include/root
 
-        LIBS += $$system(root-config --glibs)
+        LIBS += $$system(root-config --glibs) -lgpib
 
         INCLUDEPATH += $(ROOTSYS)/include
 
@@ -22,7 +22,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     stepper_motor.cpp \
     counting.cpp \
-    spectrometer.cpp
+    spectrometer.cpp \
+    gpib.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     sm32_2.h \
     counting.h \
     dt304.h \
-    spectrometer.h
+    spectrometer.h \
+    gpib.h
 
 
 FORMS    += mainwindow.ui
