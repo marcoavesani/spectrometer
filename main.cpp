@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
     communication.init();
     spectrometer calibration(&motor,&count,&communication);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &spectrometer::addpeak );
-
-    calibration.gatherlotsofdata(1530, 1570, 1,"",0,0);
+    communication.GPIBWrite("WA1530");
+    calibration.gatherlotsofdata(1530, 1570, 5,"",10,0.05);
     /*
     sleep(10);
     communication.GPIBWrite("WA1558");

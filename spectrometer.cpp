@@ -278,8 +278,7 @@ vector<double> spectrometer::fitgaus(string filename){
 void spectrometer::gatherlotsofdata(double shortestwavelength, double longestwavelength, double spacing,
                                     string path,double scanarea, double scanstep ) {
 
-    scanarea=searcharea;
-    scanstep=stepsize;
+
     ofstream fileout;
 
     double temp = shortestwavelength;
@@ -291,10 +290,11 @@ void spectrometer::gatherlotsofdata(double shortestwavelength, double longestwav
 
     for(double peak = shortestwavelength; peak <= longestwavelength; peak += spacing) {
 
-        string file = path + "/" + to_string(peak);
+        string file = to_string(peak);
         fileout.open(file,std::ofstream::out);
         qDebug() << "Filestream ok?" << fileout.is_open();
-        string command="WA"+std::to_string(peak);
+        string command="WA"+std::to_string(int(peak));
+        qDebug()<<command.c_str();
         gpib_point->GPIBWrite(command.c_str());
         sleep(1);
 
@@ -303,7 +303,7 @@ void spectrometer::gatherlotsofdata(double shortestwavelength, double longestwav
 
 
             step_mot_point->go(motnum, predictposition(i));
-
+            //usleep(50000);
             int events;
             counting_point->getcount(events, integtime);
 
