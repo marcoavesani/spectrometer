@@ -50,7 +50,7 @@ int gpib::init(){
         * is used in all subsequent calls to the device.
         */
        #define BDINDEX               0     // Board Index
-       #define PRIMARY_ADDR_OF_DMM   4     // Primary address of device
+       #define PRIMARY_ADDR_OF_DMM   22     // Primary address of device
        #define NO_SECONDARY_ADDR     0     // Secondary address of device
        #define TIMEOUT               T10s  // Timeout value = 10 seconds
        #define EOTMODE               1     // Enable the END message
@@ -58,24 +58,25 @@ int gpib::init(){
 
        Dev = ibdev(BDINDEX, PRIMARY_ADDR_OF_DMM, NO_SECONDARY_ADDR,
                    TIMEOUT, EOTMODE, EOSMODE);
+       /*
        if (ThreadIbsta() & ERR)
        {
           gpib::GPIBCleanup(Dev, "Unable to open device");
           return 1;
        }
-
+*/
        /*
         * Clear the internal or device functions of the device.  If the error
         * bit ERR is set in ibsta, call GPIBCleanup with an error message.
         */
-
+/*
        ibclr(Dev);
        if (ThreadIbsta() & ERR)
        {
           gpib::GPIBCleanup(Dev, "Unable to clear device");
           return 1;
        }
-
+*/
        /*
         * ========================================================================
         *

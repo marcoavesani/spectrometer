@@ -98,7 +98,7 @@ int spectrometer::addpeak(double atwavelength) {
 
         int events = 0;
         step_mot_point->go(motnum, position+i*stepsize-searcharea/2);
-        sleep(0.1);
+        usleep(1000);
         counting_point->getcount(events, integtime);
         qDebug()<<events;
         maxcountposition = (maxcount>events?(position+i*stepsize-searcharea/2):maxcountposition);
@@ -178,7 +178,8 @@ int spectrometer::compensatecounts(int steps, int counts){
         compensation += power_poly[i]*pow(steps,i);
     }
 
-    return (counts/compensation);
+    //return (counts/compensation);
+    return counts;
 }
 
 
@@ -247,10 +248,10 @@ vector<double> spectrometer::fitgaus(string filename){
       histo->SetBinContent(histo->FindBin(step_v[i]),count_v[i]);
     }
 
-
+   gaus.SetParameters(histo->GetBinContent(histo->GetMaximumBin()),histo->GetXaxis()->GetBinCenter(histo->GetMaximumBin()),800);
    histo->Fit(&gaus);
    gaus_back.SetParameters(gaus.GetParameter(0),gaus.GetParameter(1),gaus.GetParameter(2),1);
-   histo->Fit(&gaus_back,"MIE");
+   histo->Fit(&gaus_back,"MI");
    TFile file("hsimple.root","update");
    for(int i=0; i<histo->GetNbinsX();i++){
       residuals->SetBinContent(i,(histo->GetBinContent(i)-gaus_back(histo->GetBinCenter(i))));

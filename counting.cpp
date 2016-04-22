@@ -168,8 +168,8 @@ int counting::getcount(int &finalcount, unsigned long integtime) {
     ioctl(fh,TIMER_RESET);
 //std::cout<<"Debug"<<std::endl;
     /* prepare counter 2 as 1 kHz heartbeat for the gate output */
-    ioctl(fh,SET_USER_PERIODE_2, 0xffff-20+2);
-    ioctl(fh,SET_USER_PULSE_2, 0xffff-10+1);
+    ioctl(fh,SET_USER_PERIODE_2, 0xffff-4+2);
+    ioctl(fh,SET_USER_PULSE_2, 0xffff-2+1);
     ioctl(fh,SET_USER_CONTROL_2, SELECT_INTERNAL_CLOCK | USER_GATE_HIGH |
       CONTINUOUS_INCR_MODE | OUTPUT_HIGH_ACTIVE|ONESHOT_TRIGGER_ENABLE);
 

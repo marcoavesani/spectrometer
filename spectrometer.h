@@ -47,7 +47,7 @@ private:
     int motnum = 0;
     stepper_motor * step_mot_point;
     counting * counting_point;
-    unsigned long integtime=1000;
+    unsigned long integtime=50000;
     //int maxtimesl; //needs to be initialized with proper value
 
     double blazingangle = M_PI*((28.68)/180); // in Rad
