@@ -28,7 +28,7 @@ public:
     int send_data(std::string datastring );
     int receive_data();
 
-    void GPIBWrite(char* SCPIcmd);
+    void GPIBWrite(const char* SCPIcmd);
     char *GPIBRead(void);
     //void GPIBCleanup(int Dev, char* ErrorMsg);
 signals:

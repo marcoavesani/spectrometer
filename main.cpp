@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <iostream>
+#include <string>
 #include "stepper_motor.h"
 #include "counting.h"
 #include "spectrometer.h"
@@ -17,7 +18,6 @@ int main(int argc, char *argv[])
 
 {   TApplication app ("A",0,0);
     app.SetReturnFromRun(kTRUE);
-
     gStyle-> SetCanvasPreferGL(kTRUE);
     QApplication a(argc, argv);
     MainWindow w;
@@ -30,10 +30,12 @@ int main(int argc, char *argv[])
     }
     counting count;
     gpib communication;
-    spectrometer calibration(&motor,&count);
+    communication.init();
+    spectrometer calibration(&motor,&count,&communication);
     QObject::connect(&w, &MainWindow::valuewl,&calibration , &spectrometer::addpeak );
 
-    communication.init();
+    calibration.gatherlotsofdata(1530, 1570, 1,"",0,0);
+    /*
     sleep(10);
     communication.GPIBWrite("WA1558");
     qDebug()<<communication.GPIBRead();

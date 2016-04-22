@@ -2,11 +2,16 @@
 #include <cmath>
 #include <QDebug>
 using namespace std;
-spectrometer::spectrometer(stepper_motor * step, counting * count, QWidget *parent) : QWidget(parent)
+spectrometer::spectrometer(stepper_motor * step, counting * count, gpib *gpib_c, QWidget *parent) : QWidget(parent)
 {
 
     step_mot_point=step;
     counting_point=count;
+    gpib_point=gpib_c;
+    if(step_mot_point==NULL || counting_point==NULL || gpib_point==NULL){
+        qDebug()<<"ERRORS WITH CONSTRUCTION POINTERS IN SPECTROMETER";
+    }
+
     stepsize = int(0.00171892/360*(step->getnumbofsteps()));
     searcharea=300*(0.00171892/360*(step->getnumbofsteps()));
     motnum=0;
@@ -267,5 +272,46 @@ vector<double> spectrometer::fitgaus(string filename){
   }
 
    return result;
+
+}
+
+void spectrometer::gatherlotsofdata(double shortestwavelength, double longestwavelength, double spacing,
+                                    string path,double scanarea, double scanstep ) {
+
+    scanarea=searcharea;
+    scanstep=stepsize;
+    ofstream fileout;
+
+    double temp = shortestwavelength;
+    if(shortestwavelength > longestwavelength)
+        {
+            shortestwavelength = longestwavelength;
+            longestwavelength = temp;
+        }
+
+    for(double peak = shortestwavelength; peak <= longestwavelength; peak += spacing) {
+
+        string file = path + "/" + to_string(peak);
+        fileout.open(file,std::ofstream::out);
+        qDebug() << "Filestream ok?" << fileout.is_open();
+        string command="WA"+std::to_string(peak);
+        gpib_point->GPIBWrite(command.c_str());
+        sleep(1);
+
+        for(double i = peak-scanarea; i <= peak+scanarea; i += scanstep ) {
+
+
+
+            step_mot_point->go(motnum, predictposition(i));
+
+            int events;
+            counting_point->getcount(events, integtime);
+
+            fileout << predictposition(i) << " " << events << endl;
+        }
+
+        fileout.close();
+    }
+
 
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "counting.h"
+#include "gpib.h"
 #include "stepper_motor.h"
 #include <QWidget>
 #include <fstream>
@@ -21,7 +22,7 @@ class spectrometer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit spectrometer( stepper_motor *step, counting *count,QWidget *parent = 0);
+    explicit spectrometer( stepper_motor *step, counting *count,gpib * gpib_c,QWidget *parent = 0);
     ~spectrometer();
     int firstpeak(double wavelength); //moves to the position where you expect maximal emission according to the grating equation
     int addpeak(double wavelength);
@@ -33,7 +34,8 @@ public:
     int compensatecounts(int steps, int counts); //uses empirical fit to compensate the wavelength dependent efficiency of the components
     int scanandplot(double shortestwavelength, double longestwavelength, double precision);
     int savedataas(std::string nameoffile);
-    void automatic_calibration(double initial_w, double final_w, double res);
+    void gatherlotsofdata(double shortestwavelength, double longestwavelength, double spacing, std::string path,
+                                        double scanarea , double scanstep);
 
 
 private:
@@ -47,6 +49,7 @@ private:
     int motnum = 0;
     stepper_motor * step_mot_point;
     counting * counting_point;
+    gpib * gpib_point;
     unsigned long integtime=50000;
     //int maxtimesl; //needs to be initialized with proper value
 

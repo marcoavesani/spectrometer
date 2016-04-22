@@ -139,7 +139,7 @@ int gpib::init(){
 /*
  * Write to the PNA
  */
-void gpib::GPIBWrite(char* SCPIcmd)
+void gpib::GPIBWrite(const char* SCPIcmd)
 {
 int length;
 char ErrorMsg[ERRMSGSIZE + 1];
